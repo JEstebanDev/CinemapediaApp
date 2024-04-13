@@ -28,56 +28,72 @@ class _HomeViewState extends ConsumerState<_HomeView> {
   void initState() {
     super.initState();
     ref.read(nowPlayingMovieProvider.notifier).loadNextPage();
+    ref.read(popularMovieProvider.notifier).loadNextPage();
+    ref.read(topRatedMovieProvider.notifier).loadNextPage();
+    ref.read(upComingMovieProvider.notifier).loadNextPage();
   }
 
   @override
   Widget build(BuildContext context) {
+    final initialLoading = ref.watch(initialLoadingProvider);
+    if (initialLoading) return const FullScreenLoader();
     final nowPlayingMovies = ref.watch(nowPlayingMovieProvider);
     final sliceShowMovies = ref.watch(movieSliceShowProvider);
-    if (sliceShowMovies.isEmpty) {
-      return const CircularProgressIndicator();
-    }
-    return CustomScrollView(slivers: [
-      const SliverAppBar(
-        floating: true,
-        flexibleSpace: FlexibleSpaceBar(
-          centerTitle: false,
-          title: CustomAppBar(),
-          background: ColoredBox(color: Colors.white),
-          titlePadding: EdgeInsets.only(top: 5, bottom: 5, left: 0, right: 0),
-        ),
-      ),
-      SliverList(
-          delegate: SliverChildBuilderDelegate((context, index) {
-        return Column(
-          children: [
-            MovieSliceShow(movies: sliceShowMovies),
-            MovieHorizontalListView(
-              movies: nowPlayingMovies,
-              title: 'In Theaters',
-              subTitle: 'Monday 20th',
-              loadNextPage: () =>
-                  ref.read(nowPlayingMovieProvider.notifier).loadNextPage(),
+    final popularMovies = ref.watch(popularMovieProvider);
+    final topRatedMovies = ref.watch(topRatedMovieProvider);
+    final upComingMovies = ref.watch(upComingMovieProvider);
+
+    return Visibility(
+        visible: !initialLoading,
+        child: CustomScrollView(slivers: [
+          const SliverAppBar(
+            floating: true,
+            flexibleSpace: FlexibleSpaceBar(
+              centerTitle: false,
+              title: CustomAppBar(),
+              background: ColoredBox(color: Colors.white),
+              titlePadding:
+                  EdgeInsets.only(top: 5, bottom: 5, left: 0, right: 0),
             ),
-            MovieHorizontalListView(
-              movies: nowPlayingMovies,
-              title: 'Popular',
-              loadNextPage: () =>
-                  ref.read(nowPlayingMovieProvider.notifier).loadNextPage(),
-            ),
-            MovieHorizontalListView(
-              movies: nowPlayingMovies,
-              title: 'Best Qualified',
-              subTitle: 'All times movies',
-              loadNextPage: () =>
-                  ref.read(nowPlayingMovieProvider.notifier).loadNextPage(),
-            ),
-            const SizedBox(
-              height: 10,
-            )
-          ],
-        );
-      }, childCount: 1))
-    ]);
+          ),
+          SliverList(
+              delegate: SliverChildBuilderDelegate((context, index) {
+            return Column(
+              children: [
+                MovieSliceShow(movies: sliceShowMovies),
+                MovieHorizontalListView(
+                  movies: nowPlayingMovies,
+                  title: 'In Theaters',
+                  subTitle: 'Monday 20th',
+                  loadNextPage: () =>
+                      ref.read(nowPlayingMovieProvider.notifier).loadNextPage(),
+                ),
+                MovieHorizontalListView(
+                  movies: popularMovies,
+                  title: 'Popular',
+                  loadNextPage: () =>
+                      ref.read(popularMovieProvider.notifier).loadNextPage(),
+                ),
+                MovieHorizontalListView(
+                  movies: topRatedMovies,
+                  title: 'Top Rated',
+                  subTitle: 'Best Movies',
+                  loadNextPage: () =>
+                      ref.read(topRatedMovieProvider.notifier).loadNextPage(),
+                ),
+                MovieHorizontalListView(
+                  movies: upComingMovies,
+                  title: 'UpComing',
+                  subTitle: 'Soon in theaters',
+                  loadNextPage: () =>
+                      ref.read(upComingMovieProvider.notifier).loadNextPage(),
+                ),
+                const SizedBox(
+                  height: 10,
+                )
+              ],
+            );
+          }, childCount: 1))
+        ]));
   }
 }

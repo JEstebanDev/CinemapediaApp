@@ -46,7 +46,7 @@ class _MovieHorizontalListViewState extends State<MovieHorizontalListView> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 350,
+      height: 370,
       child: Column(
         children: [
           if (widget.title != null || widget.subTitle != null)
@@ -61,7 +61,7 @@ class _MovieHorizontalListViewState extends State<MovieHorizontalListView> {
                   scrollDirection: Axis.horizontal,
                   physics: const BouncingScrollPhysics(),
                   itemBuilder: (context, index) =>
-                      _Slide(movie: widget.movies[index])))
+                      FadeIn(child: _Slide(movie: widget.movies[index]))))
         ],
       ),
     );
@@ -90,6 +90,7 @@ class _Slide extends StatelessWidget {
                 child: Image.network(
                   movie.posterPath,
                   width: 150,
+                  height: 230,
                   fit: BoxFit.cover,
                   loadingBuilder: (context, child, loadingProgress) {
                     if (loadingProgress != null) {
@@ -109,12 +110,23 @@ class _Slide extends StatelessWidget {
               height: 5,
             ),
             SizedBox(
-              width: 150,
-              child: Text(
-                movie.title,
-                maxLines: 2,
-                style: textStyle.titleSmall,
-              ),
+                width: 150,
+                height: 40,
+                child: Center(
+                  child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 2),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          movie.title,
+                          maxLines: 2,
+                          style: textStyle.titleSmall,
+                          textAlign: TextAlign.left,
+                        ),
+                      )),
+                )),
+            const SizedBox(
+              height: 5,
             ),
             SizedBox(
               width: 150,
@@ -155,7 +167,7 @@ class _Title extends StatelessWidget {
   Widget build(BuildContext context) {
     final titleStyle = Theme.of(context).textTheme.titleLarge;
     return Container(
-      padding: const EdgeInsets.only(top: 10),
+      padding: const EdgeInsets.symmetric(vertical: 10),
       margin: const EdgeInsets.symmetric(horizontal: 10),
       child: Row(
         children: [

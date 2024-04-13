@@ -36,29 +36,72 @@ class _Slide extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final decoration =
-        BoxDecoration(borderRadius: BorderRadius.circular(20), boxShadow: const [
-      BoxShadow(color: Colors.black45, blurRadius: 10, offset: Offset(0, 10)),
-    ]);
+    final textStyle = Theme.of(context).textTheme;
+    final decoration = BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: const [
+          BoxShadow(
+              color: Colors.black45, blurRadius: 10, offset: Offset(0, 10)),
+        ]);
     return Padding(
       padding: const EdgeInsets.only(bottom: 30),
       child: DecoratedBox(
-        decoration: decoration,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: Image.network(
-            movie.backdropPath,
-            fit: BoxFit.cover,
-            loadingBuilder: (context, child, loadingProgress) {
-              if (loadingProgress != null) {
-                return const DecoratedBox(
-                    decoration: BoxDecoration(color: Colors.black54));
-              }
-              return FadeIn(child: child);
-            },
-          ),
-        ),
-      ),
+          decoration: decoration,
+          child: Stack(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Image.network(
+                  movie.backdropPath,
+                  fit: BoxFit.cover,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress != null) {
+                      return const DecoratedBox(
+                          decoration: BoxDecoration(color: Colors.black54));
+                    }
+                    return FadeIn(child: child);
+                  },
+                ),
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(20),
+                            bottomRight: Radius.circular(20)),
+                        gradient: LinearGradient(
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.topCenter,
+                          colors: [
+                            Colors.black.withOpacity(0.7),
+                            Colors.black.withOpacity(0.0),
+                          ],
+                          stops: const [0.0, 0.9],
+                        ),
+                      ),
+                      height: 40,
+                      child: Padding(
+                          padding: const EdgeInsets.only(left: 15),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              movie.title,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontFamily:
+                                      textStyle.titleMedium?.fontFamily),
+                            ),
+                          )),
+                    ),
+                  )
+                ],
+              )
+            ],
+          )),
     );
   }
 }
