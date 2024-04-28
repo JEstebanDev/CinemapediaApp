@@ -1,11 +1,10 @@
 import 'package:cinemapedia_app/domain/entities/movie.dart';
 import 'package:cinemapedia_app/infrastructure/models/models.dart';
-import 'package:cinemapedia_app/infrastructure/models/moviedb/movie_moviedb.dart';
 
 class MovieMapper {
   static const String baseImageUrlPath = "https://image.tmdb.org/t/p/w500";
   static const String noPosterFound =
-      "https://ih1.redbubble.net/image.1861329650.2941/flat,750x,075,f-pad,750x1000,f8f8f8.jpg";
+      "https://lascrucesfilmfest.com/wp-content/uploads/2018/01/no-poster-available.jpg";
 
   static Movie movieDBToEntity(MovieMovieDB movieDB) => Movie(
       adult: movieDB.adult,
@@ -20,7 +19,7 @@ class MovieMapper {
       popularity: movieDB.popularity,
       posterPath: movieDB.posterPath != ''
           ? baseImageUrlPath + movieDB.posterPath
-          : "no-poster",
+          : noPosterFound,
       releaseDate: movieDB.releaseDate,
       title: movieDB.title,
       video: movieDB.video,
